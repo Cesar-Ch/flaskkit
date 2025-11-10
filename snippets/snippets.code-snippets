@@ -1,0 +1,44 @@
+{
+    "Flask App Básico": {
+        "prefix": "!fapp",
+        "body": [
+            "from flask import Flask",
+            "",
+            "app = Flask(__name__)",
+            "",
+            "@app.route('/')",
+            "def index():",
+            "    return '${1:Hello World}'",
+            "",
+            "if __name__ == '__main__':",
+            "    app.run(debug=True)"
+        ],
+        "description": "Crea una aplicación Flask básica"
+    },
+    "Conexion con Base de Datos": {
+        "prefix": "!dbconn",
+        "body": [
+            "import pymysql",
+            "",
+            "",
+            "def obtener_conexion():",
+            "    try:",
+            "        con = pymysql.connect(",
+            "            host=\"localhost\",",
+            "            port=3306,",
+            "            user=\"root\",",
+            "            password=\"\",",
+            "            database=\"exam0301\",",
+            "            cursorclass=pymysql.cursors.DictCursor,",
+            "        )",
+            "        print(\"OK\")",
+            "        return con",
+            "    except Exception as e:",
+            "        print(\"Error:\", e)",
+            "",
+            "",
+            "obtener_conexion()"
+        ],
+        "description": "Crea una conexión básica a una base de datos MySQL usando XAMPP en local"
+    }
+}
