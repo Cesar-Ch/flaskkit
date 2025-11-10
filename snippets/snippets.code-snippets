@@ -40,5 +40,71 @@
             "obtener_conexion()"
         ],
         "description": "Crea una conexión básica a una base de datos MySQL usando XAMPP en local"
+    },
+    "Insertar Alumno": {
+        "prefix": "!insertaralumno",
+        "body": [
+            "def insertar_alumno(nombre, apellido, institucion_educativa, peso, estatura, cantidad_cursos, enlace_informacion, enlace_imagen):",
+            "    conexion = obtener_conexion()",
+            "    with conexion.cursor() as cursor:",
+            "        cursor.execute(",
+            "            \"INSERT INTO alumno (nombre, apellido, institucion_educativa, peso, estatura, cantidad_cursos, enlace_informacion, enlace_imagen) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)\",",
+            "            (nombre, apellido, institucion_educativa, peso, estatura, cantidad_cursos, enlace_informacion, enlace_imagen)",
+            "        )",
+            "    conexion.commit()",
+            "    conexion.close()"
+        ],
+        "description": "Función para insertar un alumno en la base de datos MySQL (PythonAnywhere)"
+    },
+    "API Registrar Alumno": {
+        "prefix": "!api_alumno",
+        "body": [
+            "@app.route('/api_registrar_alumno', methods=['POST'])",
+            "def api_registrar_alumno():",
+            "    from flask import request, jsonify",
+            "    rpta = dict()",
+            "    try:",
+            "        data = request.json",
+            "        nombre = data.get('nombre')",
+            "        apellido = data.get('apellido')",
+            "        institucion_educativa = data.get('institucion_educativa')",
+            "        peso = data.get('peso')",
+            "        estatura = data.get('estatura')",
+            "        cantidad_cursos = data.get('cantidad_cursos')",
+            "        enlace_informacion = data.get('enlace_informacion')",
+            "        enlace_imagen = data.get('enlace_imagen')",
+            "",
+            "        insertar_alumno(nombre, apellido, institucion_educativa, peso, estatura, cantidad_cursos, enlace_informacion, enlace_imagen)",
+            "        rpta['code'] = 1",
+            "        rpta['data'] = []",
+            "        rpta['message'] = 'Alumno insertado correctamente'",
+            "    except Exception as e:",
+            "        rpta['code'] = 0",
+            "        rpta['data'] = []",
+            "        rpta['message'] = 'Ocurrió el siguiente error: ' + repr(e)",
+            "    return jsonify(rpta)"
+        ],
+        "description": "API Flask para registrar un alumno mediante una solicitud POST"
+    },
+    "Conexion PythonAnywhere": {
+        "prefix": "!dbconnpa",
+        "body": [
+            "import pymysql",
+            "",
+            "def obtener_conexion():",
+            "    try:",
+            "        con = pymysql.connect(",
+            "            host='${1:name}.mysql.pythonanywhere-services.com',",
+            "            user='${1:name}',",
+            "            password='${2:pass}',",
+            "            db='${1:name}$${3:bd}',",
+            "            cursorclass=pymysql.cursors.DictCursor",
+            "        )",
+            "        print('OK')",
+            "        return con",
+            "    except Exception as e:",
+            "        print('Error:', e)"
+        ],
+        "description": "Conexión MySQL adaptada para PythonAnywhere"
     }
 }
