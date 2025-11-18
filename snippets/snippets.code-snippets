@@ -1,6 +1,6 @@
 {
-    "Flask App Básico": {
-        "prefix": "!fapp",
+    "Basic Flask App": {
+        "prefix": "!flaskapp",
         "body": [
             "from flask import Flask",
             "",
@@ -13,80 +13,31 @@
             "if __name__ == '__main__':",
             "    app.run(debug=True)"
         ],
-        "description": "Crea una aplicación Flask básica"
+        "description": "Creates a basic Flask application"
     },
-    "Conexion con Base de Datos": {
+    "Local Database Connection": {
         "prefix": "!dbconn",
         "body": [
             "import pymysql",
             "",
-            "",
             "def obtener_conexion():",
             "    try:",
             "        con = pymysql.connect(",
-            "            host=\"localhost\",",
+            "            host='localhost',",
             "            port=3306,",
-            "            user=\"root\",",
-            "            password=\"\",",
-            "            database=\"exam0301\",",
-            "            cursorclass=pymysql.cursors.DictCursor,",
+            "            user='${1:root}',",
+            "            password='${2:}',",
+            "            database='${3:exam0301}',",
+            "            cursorclass=pymysql.cursors.DictCursor",
             "        )",
-            "        print(\"OK\")",
+            "        print('Connection OK')",
             "        return con",
             "    except Exception as e:",
-            "        print(\"Error:\", e)",
-            "",
-            "",
-            "obtener_conexion()"
+            "        print('Error:', e)"
         ],
-        "description": "Crea una conexión básica a una base de datos MySQL usando XAMPP en local"
+        "description": "Creates a basic local MySQL connection using XAMPP"
     },
-    "Insertar Alumno": {
-        "prefix": "!insertaralumno",
-        "body": [
-            "def insertar_alumno(nombre, apellido, institucion_educativa, peso, estatura, cantidad_cursos, enlace_informacion, enlace_imagen):",
-            "    conexion = obtener_conexion()",
-            "    with conexion.cursor() as cursor:",
-            "        cursor.execute(",
-            "            \"INSERT INTO alumno (nombre, apellido, institucion_educativa, peso, estatura, cantidad_cursos, enlace_informacion, enlace_imagen) VALUES (%s, %s, %s, %s, %s, %s, %s, %s)\",",
-            "            (nombre, apellido, institucion_educativa, peso, estatura, cantidad_cursos, enlace_informacion, enlace_imagen)",
-            "        )",
-            "    conexion.commit()",
-            "    conexion.close()"
-        ],
-        "description": "Función para insertar un alumno en la base de datos MySQL (PythonAnywhere)"
-    },
-    "API Registrar Alumno": {
-        "prefix": "!api_alumno",
-        "body": [
-            "@app.route('/api_registrar_alumno', methods=['POST'])",
-            "def api_registrar_alumno():",
-            "    from flask import request, jsonify",
-            "    rpta = dict()",
-            "    try:",
-            "        data = request.json",
-            "        nombre = data.get('nombre')",
-            "        apellido = data.get('apellido')",
-            "        institucion_educativa = data.get('institucion_educativa')",
-            "        peso = data.get('peso')",
-            "        estatura = data.get('estatura')",
-            "        cantidad_cursos = data.get('cantidad_cursos')",
-            "        enlace_informacion = data.get('enlace_informacion')",
-            "        enlace_imagen = data.get('enlace_imagen')",
-            "",
-            "        insertar_alumno(nombre, apellido, institucion_educativa, peso, estatura, cantidad_cursos, enlace_informacion, enlace_imagen)",
-            "        rpta['code'] = 1",
-            "        rpta['data'] = []",
-            "        rpta['message'] = 'Alumno insertado correctamente'",
-            "    except Exception as e:",
-            "        rpta['code'] = 0",
-            "        rpta['data'] = []",
-            "        rpta['message'] = 'Ocurrió el siguiente error: ' + repr(e)",
-            "    return jsonify(rpta)"
-        ],
-        "description": "API Flask para registrar un alumno mediante una solicitud POST"
-    },
-    "Conexion PythonAnywhere": {
+    "PythonAnywhere Database Connection": {
         "prefix": "!dbconnpa",
         "body": [
             "import pymysql",
@@ -94,17 +45,265 @@
             "def obtener_conexion():",
             "    try:",
             "        con = pymysql.connect(",
-            "            host='${1:name}.mysql.pythonanywhere-services.com',",
-            "            user='${1:name}',",
-            "            password='${2:pass}',",
-            "            db='${1:name}$${3:bd}',",
+            "            host='${1:username}.mysql.pythonanywhere-services.com',",
+            "            user='${1:username}',",
+            "            password='${2:password}',",
+            "            db='${1:username}$${3:dbname}',",
             "            cursorclass=pymysql.cursors.DictCursor",
             "        )",
-            "        print('OK')",
+            "        print('Connection OK')",
             "        return con",
             "    except Exception as e:",
             "        print('Error:', e)"
         ],
-        "description": "Conexión MySQL adaptada para PythonAnywhere"
+        "description": "Creates a MySQL connection configured for PythonAnywhere"
+    },
+    "SHA256 Encrypt Function": {
+        "prefix": "!sha256",
+        "body": [
+            "import hashlib",
+            "",
+            "def sha256_encrypt(text):",
+            "    text = text.encode('utf-8')",
+            "    return hashlib.sha256(text).hexdigest()"
+        ],
+        "description": "Create a function that generates SHA-256 encrypted strings"
+    },
+    "Generate Verification Code": {
+        "prefix": "!verifycode",
+        "body": [
+            "import random",
+            "",
+            "def generate_code():",
+            "    return random.randint(100000, 999999)"
+        ],
+        "description": "Generates a 6-digit verification code"
+    },
+    "API Register User": {
+        "prefix": "!api_registeruser",
+        "body": [
+            "@app.route('/api_register_user', methods=['POST'])",
+            "def api_register_user():",
+            "    data = request.json",
+            "    usuario = (data.get('usuario') or '').strip()",
+            "    passw = (data.get('pass') or '').strip()",
+            "",
+            "    if not usuario:",
+            "        return jsonify({'code': 0, 'message': \"Field 'usuario' is required\"}), 400",
+            "",
+            "    if not passw:",
+            "        return jsonify({'code': 0, 'message': \"Field 'pass' is required\"}), 400",
+            "",
+            "    return registrar_usuario(usuario, passw)"
+        ],
+        "description": "Creates an API for user registration"
+    },
+    "API Confirm User": {
+        "prefix": "!api_confirmuser",
+        "body": [
+            "@app.route('/api_confirm_user', methods=['POST'])",
+            "def api_confirm_user():",
+            "    data = request.json",
+            "    usuario = (data.get('usuario') or '').strip()",
+            "    code = data.get('codeverify')",
+            "",
+            "    if not usuario:",
+            "        return jsonify({'code': 0, 'message': \"Field 'usuario' is required\"}), 400",
+            "",
+            "    if not code:",
+            "        return jsonify({'code': 0, 'message': \"Field 'codeverify' is required\"}), 400",
+            "",
+            "    return confirmar_usuario(usuario, code)"
+        ],
+        "description": "Creates an API for confirming user verification"
+    },
+    "API List Users (JWT Required)": {
+        "prefix": "!api_listusers",
+        "body": [
+            "@app.route('/api_list_users', methods=['GET'])",
+            "@jwt_required()",
+            "def api_list_users():",
+            "    return listar_usuarios()"
+        ],
+        "description": "Creates an endpoint that returns user list and requires JWT authentication"
+    },
+    "JWT Basic Setup": {
+        "prefix": "!jwtsetup",
+        "body": [
+            "from flask_jwt import JWT, jwt_required, current_identity",
+            "",
+            "class User(object):",
+            "    def __init__(self, id, username, password):",
+            "        self.id = id",
+            "        self.username = username",
+            "        self.password = password",
+            "",
+            "def authenticate(username, password):",
+            "    user_data = obtener_usuario_confirmado(username, password)",
+            "    if user_data:",
+            "        return User(user_data[0], user_data[1], user_data[2])",
+            "    return None",
+            "",
+            "def identity(payload):",
+            "    user_id = payload['identity']",
+            "    user_data = obtener_usuario_por_id(user_id)",
+            "    if user_data:",
+            "        return User(user_data[0], user_data[1], user_data[2])",
+            "    return None",
+            "",
+            "jwt = JWT(app, authenticate, identity)"
+        ],
+        "description": "Sets up JWT authentication with custom user validation"
+    },
+    "Register User Function": {
+        "prefix": "!registeruser",
+        "body": [
+            "def registrar_usuario(usuario, passw):",
+            "    try:",
+            "        con = obtener_conexion()",
+            "        with con.cursor() as cursor:",
+            "            code = generarcodigo()",
+            "            pass_encrip = encriptar_sha256(passw)",
+            "            cursor.execute(",
+            "                \"INSERT INTO USUARIO(usuario, pass, codeverify) VALUES (%s, %s, %s)\",",
+            "                (usuario, pass_encrip, code),",
+            "            )",
+            "            con.commit()",
+            "            return (",
+            "                jsonify({",
+            "                    \"code\": 1,",
+            "                    \"data\": {\"usuario\": usuario, \"codeverify\": code},",
+            "                    \"message\": \"Usuario registrado exitosamente\",",
+            "                }),",
+            "                200,",
+            "            )",
+            "    except Exception as e:",
+            "        print(\"Error:\", e)",
+            "        return jsonify({\"code\": 0, \"message\": \"Error al registrar el usuario\"}), 400"
+        ],
+        "description": "Creates a database function to register a new user"
+    },
+
+    "Confirm User Function": {
+        "prefix": "!confirmuser",
+        "body": [
+            "def confirmar_usuario(usuario, code):",
+            "    try:",
+            "        con = obtener_conexion()",
+            "        with con.cursor() as cursor:",
+            "            cursor.execute(",
+            "                \"SELECT * FROM USUARIO WHERE usuario=%s AND codeverify=%s AND confirmado=0\",",
+            "                (usuario, code),",
+            "            )",
+            "            usuario_encontrado = cursor.fetchone()",
+            "            if usuario_encontrado:",
+            "                cursor.execute(",
+            "                    \"UPDATE USUARIO SET confirmado=1 WHERE usuario_id=%s\",",
+            "                    (usuario_encontrado[0],),",
+            "                )",
+            "                con.commit()",
+            "                return (",
+            "                    jsonify({",
+            "                        \"code\": 1,",
+            "                        \"data\": \"\",",
+            "                        \"message\": \"Usuario confirmado exitosamente\",",
+            "                    }),",
+            "                    200,",
+            "                )",
+            "            else:",
+            "                return (",
+            "                    jsonify({",
+            "                        \"code\": 0,",
+            "                        \"message\": \"Código de verificación inválido o usuario ya confirmado\",",
+            "                    }),",
+            "                    400,",
+            "                )",
+            "    except Exception as e:",
+            "        print(\"Error:\", e)",
+            "        return jsonify({\"code\": 0, \"message\": \"Error al confirmar el usuario\"}), 400"
+        ],
+        "description": "Creates a function to confirm a user using a verification code"
+    },
+
+    "List Users Function": {
+        "prefix": "!listusers",
+        "body": [
+            "def listar_usuarios():",
+            "    try:",
+            "        con = obtener_conexion()",
+            "        with con.cursor() as cursor:",
+            "            cursor.execute(\"SELECT usuario AS email, pass AS password FROM USUARIO\")",
+            "            usuarios = cursor.fetchall()",
+            "            return (",
+            "                jsonify({",
+            "                    \"code\": 1,",
+            "                    \"data\": usuarios,",
+            "                    \"message\": \"Lista de usuarios obtenida exitosamente\",",
+            "                }),",
+            "                200,",
+            "            )",
+            "    except Exception as e:",
+            "        print(\"Error:\", e)",
+            "        return jsonify({\"code\": 0, \"message\": \"Error al listar los usuarios\"}), 400"
+        ],
+        "description": "Creates a function to fetch and list all users"
+    },
+
+    "Get User Function": {
+        "prefix": "!getuser",
+        "body": [
+            "def obtener_usuario(usuario):",
+            "    try:",
+            "        con = obtener_conexion()",
+            "        with con.cursor() as cursor:",
+            "            cursor.execute(\"SELECT * FROM USUARIO WHERE usuario=%s\", (usuario,))",
+            "            usuario_encontrado = cursor.fetchone()",
+            "            return usuario_encontrado",
+            "    except Exception as e:",
+            "        print(\"Error:\", e)",
+            "        return None"
+        ],
+        "description": "Creates a function to get a user by email"
+    },
+
+    "Get User By ID Function": {
+        "prefix": "!getuserid",
+        "body": [
+            "def obtener_usuario_por_id(usuario_id):",
+            "    try:",
+            "        con = obtener_conexion()",
+            "        with con.cursor() as cursor:",
+            "            cursor.execute(\"SELECT * FROM USUARIO WHERE usuario_id=%s\", (usuario_id,))",
+            "            usuario_encontrado = cursor.fetchone()",
+            "            return usuario_encontrado",
+            "    except Exception as e:",
+            "        print(\"Error:\", e)",
+            "        return None"
+        ],
+        "description": "Creates a function to get a user by ID"
+    },
+
+    "Get Confirmed User Function": {
+        "prefix": "!confirmeduser",
+        "body": [
+            "def obtener_usuario_confirmado(usuario, passw):",
+            "    try:",
+            "        con = obtener_conexion()",
+            "        with con.cursor() as cursor:",
+            "            pass_encrip = encriptar_sha256(passw)",
+            "            print(passw)",
+            "            print(pass_encrip)",
+            "            cursor.execute(",
+            "                \"SELECT * FROM USUARIO WHERE usuario=%s AND pass=%s AND confirmado=1\",",
+            "                (usuario, pass_encrip),",
+            "            )",
+            "            usuario_encontrado = cursor.fetchone()",
+            "            return usuario_encontrado",
+            "    except Exception as e:",
+            "        print(\"Error:\", e)",
+            "        return None"
+        ],
+        "description": "Creates a function to get a confirmed user (login validation)"
     }
+
 }

@@ -2,7 +2,7 @@
   "name": "flaskkit",
   "displayName": "flaskkit",
   "description": "Flaskkit is a collection of useful code snippets for Flask development in Visual Studio Code.",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "publisher": "cesarcs",
   "icon": "img/icon.jpg",
   "engines": {
